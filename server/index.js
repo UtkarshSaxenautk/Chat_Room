@@ -1,17 +1,23 @@
 const app = require('express')();
 const http = require('http').createServer(app);
-
+const mongoose = require('mongoose');
 const socketio = require('socket.io');
 const io = socketio(http);
-
+const mongodb = "mongodb+srv://utkarshutk:utkuser@chatcluster.etyqo.mongodb.net/chat-room?retryWrites=true&w=majority"
 const PORT = process.env.PORT || 5000 
-
+const Room = require('./models/Room')
 const {addUser , getUser , removerUser} = require('./helpers');
-
+mongoose.connect(mongodb , {useNewUrlParser: true , useUnifiedTopology:true }).then(()=> {
+    console.log("connected successfully")
+}).catch(err => console.log(err));
 io.on('connection' , (socket)=> {
     console.log('A user connected with socket_id: ' + socket.id);
     socket.on('create-room' , name=> {
        console.log("Recieved Room name : " + name); 
+       const room = new Room({name});
+       room.save().then(result => {
+           io.emit('room-created' , result);
+       })
     }) 
 
     socket.on('join' , ({name , room_id , user_id})=> {
@@ -22,6 +28,7 @@ io.on('connection' , (socket)=> {
         user_id
         
     })
+    socket.join(room_id);
     if(error){
         console.log("Error : " , error);
     }
