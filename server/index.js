@@ -3,7 +3,7 @@ const http = require('http').createServer(app);
 const mongoose = require('mongoose');
 const socketio = require('socket.io');
 const io = socketio(http);
-const mongodb = "mongodb+srv://utkarshutk:utkuser@chatcluster.etyqo.mongodb.net/chat-room?retryWrites=true&w=majority"
+const mongodb = "mongodb+srv://utkarshutk:password@chatcluster.etyqo.mongodb.net/chat-room?retryWrites=true&w=majority"
 const PORT = process.env.PORT || 5000 
 const Room = require('./models/Room')
 const {addUser , getUser , removerUser} = require('./helpers');
