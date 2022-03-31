@@ -6,7 +6,9 @@ import Roomlist from './Roomlist';
 import io from 'socket.io-client'
 let socket ;
 const Home = () => {
-    
+  const {user , setUser} = useContext(UserContext);
+  const [room , setRoom] = useState('');
+  const[rooms , setRooms] = useState([]);
     const ENDPT = 'localhost:5000';
     useEffect(() => {
       //socket = io(ENDPT);
@@ -18,26 +20,24 @@ const Home = () => {
       }
     }, [ENDPT])
     
-    const {user , setUser} = useContext(UserContext);
-    const [room , setRoom] = useState('');
-    
+    useEffect(()=> {
+      socket.on('room-created' ,room=> {
+        setRooms([...rooms , room]);
+      } )
+    } , [rooms])
+   
+    useEffect(()=> {
+      console.log(rooms)
+    } , [rooms])
+   
     const handleSubmit = e => {
        e.preventDefault(); 
        socket.emit('create-room' , room);
        console.log(room);
        setRoom('');
     }
-    const rooms = [
-    {
-        name:'room101',
-        _id:'123'
-    },
-    {
-        name:'room201',
-        _id:'153'
-    }
-    ]
-    const SetasBsdk = ()=> {
+    
+    const SetasSalena = ()=> {
        const salena = {
            name:"Salena",
            email:"salena1212@gmail.com",
@@ -46,7 +46,7 @@ const Home = () => {
        } 
        setUser(salena);
     }
-    const SetasLudo = ()=> {
+    const SetasTaylor = ()=> {
         const taylor = {
             name:"Taylor",
            email:"taylor34212@gmail.com",
@@ -79,8 +79,8 @@ const Home = () => {
   </div>
         </div>
         <div className="card-action">
-          <a href="#"onClick={SetasBsdk}>SET AS Salena</a>
-          <a href="#"onClick={SetasLudo}>SET AS Taylor</a>
+          <a href="#"onClick={SetasSalena}>SET AS Salena</a>
+          <a href="#"onClick={SetasTaylor}>SET AS Taylor</a>
         </div>
       </div>
     </div>
